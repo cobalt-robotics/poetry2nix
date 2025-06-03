@@ -373,7 +373,7 @@ lib.composeManyExtensions [
             buildInputs = old.buildInputs or [ ]
               ++ [ pkgs.libffi ]
               ++ lib.optionals (lib.versionAtLeast old.version "4" && stdenv.isDarwin)
-              [ pkgs.darwin.apple_sdk.frameworks.Security pkgs.libiconv ];
+              [ pkgs.libiconv ];
             nativeBuildInputs = with pkgs;
               old.nativeBuildInputs or [ ]
                 ++ lib.optionals (lib.versionAtLeast old.version "4") [ rustc cargo pkgs.rustPlatform.cargoSetupHook final.setuptools-rust ];
@@ -645,7 +645,7 @@ lib.composeManyExtensions [
               buildInputs = old.buildInputs or [ ]
                 ++ [ pkgs.libxcrypt ]
                 ++ [ (if lib.versionAtLeast old.version "37" then pkgs.openssl_3 else pkgs.openssl_1_1) ]
-                ++ lib.optionals stdenv.isDarwin [ pkgs.darwin.apple_sdk.frameworks.Security pkgs.libiconv ];
+                ++ lib.optionals stdenv.isDarwin [ pkgs.libiconv ];
               propagatedBuildInputs = old.propagatedBuildInputs or [ ] ++ [ final.cffi ];
             } // lib.optionalAttrs (lib.versionAtLeast old.version "3.4" && lib.versionOlder old.version "3.5") {
               CRYPTOGRAPHY_DONT_BUILD_RUST = "1";
@@ -1441,9 +1441,6 @@ lib.composeManyExtensions [
 
       llama-cpp-python = prev.llama-cpp-python.overridePythonAttrs (
         old: {
-          buildInputs = with pkgs; lib.optionals stdenv.isDarwin [
-            darwin.apple_sdk.frameworks.Accelerate
-          ];
           nativeBuildInputs = [ cmake ] ++ old.nativeBuildInputs or [ ];
           preBuild = ''
             cd "$OLDPWD"
@@ -1571,7 +1568,6 @@ lib.composeManyExtensions [
 
           inherit (pkgs) tk tcl wayland qhull;
           inherit (pkgs.xorg) libX11;
-          inherit (pkgs.darwin.apple_sdk.frameworks) Cocoa;
           mpl39 = lib.versionAtLeast prev.matplotlib.version "3.9.0";
           isSrc = !(old.src.isWheel or false);
         in
@@ -1582,8 +1578,6 @@ lib.composeManyExtensions [
             pkgs.which
           ] ++ lib.optionals enableGhostscript [
             pkgs.ghostscript
-          ] ++ lib.optionals stdenv.isDarwin [
-            Cocoa
           ] ++ lib.optionals (lib.versionAtLeast prev.matplotlib.version "3.7.0") [
             final.pybind11
           ];
@@ -1974,14 +1968,7 @@ lib.composeManyExtensions [
           nativeBuildInputs = [ cmake ] ++ old.nativeBuildInputs;
           buildInputs = [
             pkgs.ninja
-          ] ++ lib.optionals stdenv.isDarwin (with pkgs.darwin.apple_sdk.frameworks; [
-            Accelerate
-            AVFoundation
-            Cocoa
-            CoreMedia
-            MediaToolbox
-            VideoDecodeAcceleration
-          ]) ++ old.buildInputs or [ ];
+          ] ++ old.buildInputs or [ ];
           dontUseCmakeConfigure = true;
           postPatch = ''
             sed -i pyproject.toml -e 's/numpy==[0-9]\+\.[0-9]\+\.[0-9]\+;/numpy;/g'
@@ -3673,8 +3660,6 @@ lib.composeManyExtensions [
             inherit src cargoDeps;
 
             buildInputs = old.buildInputs or [ ] ++ lib.optionals stdenv.isDarwin [
-              pkgs.darwin.apple_sdk.frameworks.Security
-              pkgs.darwin.apple_sdk.frameworks.CoreServices
               pkgs.libiconv
             ];
             nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
@@ -4052,15 +4037,6 @@ lib.composeManyExtensions [
         }
       );
 
-      uvloop = prev.uvloop.overridePythonAttrs (
-        old: {
-          buildInputs = old.buildInputs or [ ] ++ lib.optionals stdenv.isDarwin [
-            pkgs.darwin.apple_sdk.frameworks.ApplicationServices
-            pkgs.darwin.apple_sdk.frameworks.CoreServices
-          ];
-        }
-      );
-
       watchfiles =
         let
           # Watchfiles does not include Cargo.lock in tarball released on PyPi for versions up to 0.17.0
@@ -4129,8 +4105,6 @@ lib.composeManyExtensions [
               ''
             ];
             buildInputs = old.buildInputs or [ ] ++ lib.optionals stdenv.isDarwin [
-              pkgs.darwin.apple_sdk.frameworks.Security
-              pkgs.darwin.apple_sdk.frameworks.CoreServices
               pkgs.libiconv
             ];
             nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
@@ -4175,9 +4149,6 @@ lib.composeManyExtensions [
           # Fix for v5.9.8
           # See https://github.com/conda-forge/psutil-feedstock/pull/71/files/8a53fbac242e9cb6c7fe543fdcab554c6c12aecf#r1460167074
           NIX_CFLAGS_COMPILE = "-DkIOMainPortDefault=0";
-          buildInputs = old.buildInputs or [ ]
-            ++ lib.optionals (stdenv.isDarwin && stdenv.isx86_64) [ pkgs.darwin.apple_sdk.frameworks.CoreFoundation ]
-            ++ lib.optionals stdenv.isDarwin [ pkgs.darwin.apple_sdk.frameworks.IOKit ];
         }
       );
 
@@ -4224,13 +4195,6 @@ lib.composeManyExtensions [
       tqdm = prev.tqdm.overridePythonAttrs (
         old: {
           buildInputs = [ prev.toml ] ++ old.buildInputs or [ ];
-        }
-      );
-
-      watchdog = prev.watchdog.overrideAttrs (
-        old: {
-          buildInputs = old.buildInputs or [ ]
-            ++ lib.optionals pkgs.stdenv.isDarwin [ pkgs.darwin.apple_sdk.frameworks.CoreServices ];
         }
       );
 
