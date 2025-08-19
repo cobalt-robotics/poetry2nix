@@ -752,6 +752,10 @@ lib.composeManyExtensions [
           ++ lib.optionals (! final.python ? modules) [ pkgs.ncurses ];
       });
 
+      ddtrace = prev.ddtrace.overridePythonAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ cmake ];
+      });
+
       dcli = prev.dcli.overridePythonAttrs (old: {
         propagatedBuildInputs = old.propagatedBuildInputs or [ ] ++ [ final.setuptools ];
       });
