@@ -753,7 +753,7 @@ lib.composeManyExtensions [
       });
 
       ddtrace = prev.ddtrace.overridePythonAttrs (old: {
-        nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ cmake ];
+        buildInputs = (old.buildInputs or []) ++ [ final.cmake ];
       });
 
       dcli = prev.dcli.overridePythonAttrs (old: {
