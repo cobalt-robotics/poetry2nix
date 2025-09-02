@@ -753,7 +753,8 @@ lib.composeManyExtensions [
       });
 
       ddtrace = prev.ddtrace.overridePythonAttrs (old: {
-        buildInputs = (old.buildInputs or []) ++ [ final.cmake ];
+        # There are CMakeLists in the fetched wheel, but we don't need to do anything with them.
+        dontUseCmakeConfigure = true;
       });
 
       dcli = prev.dcli.overridePythonAttrs (old: {
