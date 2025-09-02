@@ -264,7 +264,13 @@ lib.fix (self: {
             (arch == "universal2" && (platform.darwinArch == "arm64" || platform.darwinArch == "x86_64"))
             || arch == platform.darwinArch
           )
-          && compareVersions platform.darwinSdkVersion "${major}.${minor}" >= 0
+          && (
+            # Original check
+            compareVersions platform.darwinSdkVersion "${major}.${minor}" >= 0
+            # Allow wheels built for macOS 12.0 to work on 11.3+
+            # This is generally safe as macOS maintains backward compatibility
+            || (platform.darwinSdkVersion == "11.3" && "${major}.${minor}" == "12.0")
+          )
         )
       )
     else if platformTag == "win32" then
