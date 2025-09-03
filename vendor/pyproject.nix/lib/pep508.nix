@@ -100,6 +100,7 @@ let
     ">=" = a: b: a >= b;
     "<" = a: b: a < b;
     ">" = a: b: a > b;
+    "~=" = a: b: a == b;  # Compatible release - delegate to pep440.comparators for version objects
     "===" = a: b: a == b;
   };
 
@@ -129,9 +130,10 @@ let
       a: b: if isAttrs a && isAttrs b then pep440.comparators.">=" a b else (a.str or a) >= (b.str or b);
     "<" =
       a: b: if isAttrs a && isAttrs b then pep440.comparators."<" a b else (a.str or a) < (b.str or b);
-
     ">" =
       a: b: if isAttrs a && isAttrs b then pep440.comparators.">" a b else (a.str or a) > (b.str or b);
+    "~=" =
+      a: b: if isAttrs a && isAttrs b then pep440.comparators."~=" a b else (a.str or a) == (b.str or b);
     "===" = a: b: a == b;
   };
 

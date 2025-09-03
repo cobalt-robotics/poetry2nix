@@ -752,6 +752,11 @@ lib.composeManyExtensions [
           ++ lib.optionals (! final.python ? modules) [ pkgs.ncurses ];
       });
 
+      ddtrace = prev.ddtrace.overridePythonAttrs (old: {
+        # There are CMakeLists in the fetched wheel, but we don't need to do anything with them.
+        dontUseCmakeConfigure = true;
+      });
+
       dcli = prev.dcli.overridePythonAttrs (old: {
         propagatedBuildInputs = old.propagatedBuildInputs or [ ] ++ [ final.setuptools ];
       });
