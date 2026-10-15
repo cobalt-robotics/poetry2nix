@@ -127,7 +127,7 @@ pythonPackages.callPackage
       nativeBuildInputs = [
         hooks.poetry2nixFixupHook
       ]
-      ++ lib.optional (!pythonPackages.isPy27) hooks.poetry2nixPythonRequiresPatchHook
+      ++ lib.optional (!(pythonPackages.isPy27 or false)) hooks.poetry2nixPythonRequiresPatchHook
       ++ lib.optional (isLocked && (getManyLinuxDeps fileInfo.name).str != null) autoPatchelfHook
       ++ lib.optionals (format == "wheel") [
         pythonPackages.wheelUnpackHook

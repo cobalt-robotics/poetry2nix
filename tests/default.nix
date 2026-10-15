@@ -218,6 +218,7 @@ in
 
   # Gives "error: Missing suitable source/wheel file entry for gmsh"
   gmsh = callTest ./gmsh { };
+  macos-arm64-wheel-selection = callTest ./macos-arm64-wheel-selection { };
 } // lib.optionalAttrs (!stdenv.isAarch64) {
   # no wheel for aarch64 for the tested packages
   # x86_64-{linux,darwin}
