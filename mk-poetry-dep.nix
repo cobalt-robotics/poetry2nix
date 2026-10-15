@@ -140,8 +140,8 @@ pythonPackages.callPackage
         hooks.pipBuildHook
       ];
 
-      buildInputs = lib.optional isLocked (getManyLinuxDeps fileInfo.name).pkg
-        ++ lib.optional isDirectory buildSystemPkgs;
+      buildInputs = lib.optionals isLocked (getManyLinuxDeps fileInfo.name).pkg
+        ++ lib.optionals isDirectory buildSystemPkgs;
 
       propagatedBuildInputs =
         let
