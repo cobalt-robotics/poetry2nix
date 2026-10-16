@@ -644,7 +644,7 @@ lib.composeManyExtensions [
               ;
               buildInputs = old.buildInputs or [ ]
                 ++ [ pkgs.libxcrypt ]
-                ++ [ (if lib.versionAtLeast old.version "37" then pkgs.openssl_3 else pkgs.openssl_1_1) ]
+                ++ [ (if lib.versionAtLeast old.version "37" then pkgs.openssl else pkgs.openssl_1_1) ]
                 ++ lib.optionals stdenv.isDarwin [ pkgs.libiconv ];
               propagatedBuildInputs = old.propagatedBuildInputs or [ ] ++ [ final.cffi ];
             } // lib.optionalAttrs (lib.versionAtLeast old.version "3.4" && lib.versionOlder old.version "3.5") {
